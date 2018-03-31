@@ -15,8 +15,13 @@ Including another URLconf
     3. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
 from django.conf.urls import url,include
-from .views import home
+from . import views
 
 urlpatterns = [
-    url(r'^$', home)
+    url(r'^$', views.home),
+    # url like start_trip?username=<username>
+    url(r'^start_trip/(?P<user_name>\w+)/$', views.create_new_trip),
+    # url like end_trip?username=<username>
+    url(r'^end_trip/(?P<user_name>\w+)/$', views.end_trip),
+    url(r'^post_data/(?P<user_name>\w+)/$', views.receive_data)
 ]

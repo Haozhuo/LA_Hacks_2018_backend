@@ -2,12 +2,15 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from .models import DataPoint, Trip, UserData
 
+trip_start = False
+
 # Create your views here.
 def home(request):
     return JsonResponse({"data":"received"})
 
 def create_new_trip(request,user_name):
     if request.method == "GET":
+        trip_start = True
         username = user_name
         if username is not None and UserData.objects.filter(user_name=username).count() == 1:
             user = UserData.objects.filter(user_name=username)[0]
@@ -23,6 +26,7 @@ def create_new_trip(request,user_name):
 
 def end_trip(request,user_name):
     if request.method == "GET":
+        trip_start = False
         username = user_name
         if username is not None and UserData.objects.filter(user_name=username).count() == 1:
             # TODO: Send back all datapoints; right now is all 4 values
@@ -35,7 +39,7 @@ def end_trip(request,user_name):
         return JsonResponse({"data":"-1"})
 
 def receive_data(request,user_name):
-    if request.method == "GET":
+    if request.method == "GET" and trip_start:
         username = user_name
         v1,v2,v3,v4 = request.GET.get('v1'),request.GET.get('v2'),request.GET.get('v3'),request.GET.get('v4')
         if username is not None and UserData.objects.filter(user_name=username).count() == 1:

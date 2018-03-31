@@ -1,5 +1,5 @@
 End-point documentation:
-1. GET http://167.99.161.100:8000/api/start_trip/\[username\]
+1. GET http://167.99.161.100:8000/api/start_trip/[username]
    This end-point is used when the user click the start trip button. It creates a new trip under this user in the database.
    Return a JSON object like this:
    {"data":"1"}

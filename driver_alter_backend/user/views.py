@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from .models import DataPoint, Trip, UserData
+import os
 
 trip_start = False
 
@@ -10,6 +11,7 @@ def home(request):
 
 def create_new_trip(request,user_name):
     if request.method == "GET":
+        print(os.environ['TZ'])
         global trip_start
         print(trip_start)
         trip_start = True
@@ -42,11 +44,12 @@ def end_trip(request,user_name):
                 # get all time points
                 datapoints = DataPoint.objects.filter(trip=trip).order_by("createdAt")
                 for dp in datapoints:
-                    data_dict[str(dp.createdAt)] = {}
-                    data_dict[str(dp.createdAt)]["alpha1"] = dp.alpha1
-                    data_dict[str(dp.createdAt)]["alpha2"] = dp.alpha2
-                    data_dict[str(dp.createdAt)]["alpha3"] = dp.alpha3
-                    data_dict[str(dp.createdAt)]["alpha4"] = dp.alpha4
+                    key = "{}-{:0>2}-{:0>2} {:0>2}:{:0>2}:{:0>2}".format(dp.createdAt.year,dp.createdAt.month, dp.createdAt.day, dp.createdAt.hour,dp.createdAt.minute,dp.createdAt.second) 
+                    data_dict[key] = {}
+                    data_dict[key]["alpha1"] = dp.alpha1
+                    data_dict[key]["alpha2"] = dp.alpha2
+                    data_dict[key]["alpha3"] = dp.alpha3
+                    data_dict[key]["alpha4"] = dp.alpha4
 
             return JsonResponse(data_dict)
         else:

@@ -10,6 +10,8 @@ def home(request):
 
 def create_new_trip(request,user_name):
     if request.method == "GET":
+        global trip_start
+        print(trip_start)
         trip_start = True
         username = user_name
         if username is not None and UserData.objects.filter(user_name=username).count() == 1:
@@ -26,11 +28,27 @@ def create_new_trip(request,user_name):
 
 def end_trip(request,user_name):
     if request.method == "GET":
+        global trip_start
         trip_start = False
         username = user_name
         if username is not None and UserData.objects.filter(user_name=username).count() == 1:
-            # TODO: Send back all datapoints; right now is all 4 values
-            return JsonResponse({"data":"1"})
+            user = UserData.objects.filter(user_name=username)[0]
+            trips = Trip.objects.filter(userdata=user).order_by("-id")
+            # send all data points back
+            data_dict = {}
+            if trips.count() >= 1:
+                # get the latest trip
+                trip = trips[0]
+                # get all time points
+                datapoints = DataPoint.objects.filter(trip=trip).order_by("createdAt")
+                for dp in datapoints:
+                    data_dict[str(dp.createdAt)] = {}
+                    data_dict[str(dp.createdAt)]["alpha1"] = dp.alpha1
+                    data_dict[str(dp.createdAt)]["alpha2"] = dp.alpha2
+                    data_dict[str(dp.createdAt)]["alpha3"] = dp.alpha3
+                    data_dict[str(dp.createdAt)]["alpha4"] = dp.alpha4
+
+            return JsonResponse(data_dict)
         else:
             print("cannot find user")
             return JsonResponse({"data":"-1"})
@@ -39,6 +57,7 @@ def end_trip(request,user_name):
         return JsonResponse({"data":"-1"})
 
 def receive_data(request,user_name):
+    global trip_start
     if request.method == "GET" and trip_start:
         username = user_name
         v1,v2,v3,v4 = request.GET.get('v1'),request.GET.get('v2'),request.GET.get('v3'),request.GET.get('v4')
@@ -48,6 +67,7 @@ def receive_data(request,user_name):
             if trips.count() >= 1:
                 # get the latest trip
                 trip = trips[0]
+                print(trip)
                 trip.datapoint_set.create(trip=trip,alpha1=float(v1),alpha2=float(v2),alpha3=float(v3),alpha4=float(v4))
                 # TODO: Data processing
                 # if okay, return status 1; if not, return -1
@@ -59,6 +79,7 @@ def receive_data(request,user_name):
             print("cannnot find user")
             return JsonResponse({"status": "1","data":"-1"})
     else:
+        print(trip_start)
         print("method is not GET")
         return JsonResponse({"status": "1","data":"-1"})
 

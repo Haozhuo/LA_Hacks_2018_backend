@@ -19,9 +19,10 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.home),
-    # url like start_trip?username=<username>
+    # url like start_trip/<username>
     url(r'^start_trip/(?P<user_name>\w+)/$', views.create_new_trip),
-    # url like end_trip?username=<username>
+    # url like end_trip/<username>
     url(r'^end_trip/(?P<user_name>\w+)/$', views.end_trip),
-    url(r'^post_data/(?P<user_name>\w+)/$', views.receive_data)
+    # url like post_data/<username>?v1=<value1>&v2=<value2>&v3=<value3>&v4=<value4>
+    url(r'^send_data/(?P<user_name>\w+)/$', views.receive_data)
 ]

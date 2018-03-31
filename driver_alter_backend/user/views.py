@@ -44,6 +44,7 @@ def end_trip(request,user_name):
                 # get all time points
                 datapoints = DataPoint.objects.filter(trip=trip).order_by("createdAt")
                 for dp in datapoints:
+                    print(dp.createdAt)
                     key = "{}-{:0>2}-{:0>2} {:0>2}:{:0>2}:{:0>2}".format(dp.createdAt.year,dp.createdAt.month, dp.createdAt.day, dp.createdAt.hour,dp.createdAt.minute,dp.createdAt.second) 
                     data_dict[key] = {}
                     data_dict[key]["alpha1"] = dp.alpha1

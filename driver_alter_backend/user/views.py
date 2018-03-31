@@ -37,22 +37,23 @@ def end_trip(request,user_name):
             user = UserData.objects.filter(user_name=username)[0]
             trips = Trip.objects.filter(userdata=user).order_by("-id")
             # send all data points back
-            data_dict = {}
+            data_arr = []
             if trips.count() >= 1:
                 # get the latest trip
                 trip = trips[0]
                 # get all time points
                 datapoints = DataPoint.objects.filter(trip=trip).order_by("createdAt")
                 for dp in datapoints:
-                    print(dp.createdAt)
-                    key = "{}-{:0>2}-{:0>2} {:0>2}:{:0>2}:{:0>2}".format(dp.createdAt.year,dp.createdAt.month, dp.createdAt.day, dp.createdAt.hour,dp.createdAt.minute,dp.createdAt.second) 
-                    data_dict[key] = {}
-                    data_dict[key]["alpha1"] = dp.alpha1
-                    data_dict[key]["alpha2"] = dp.alpha2
-                    data_dict[key]["alpha3"] = dp.alpha3
-                    data_dict[key]["alpha4"] = dp.alpha4
+                    single_point = {}
+                    time = "{}-{:0>2}-{:0>2} {:0>2}:{:0>2}:{:0>2}".format(dp.createdAt.year,dp.createdAt.month, dp.createdAt.day, dp.createdAt.hour,dp.createdAt.minute,dp.createdAt.second) 
+                    single_point["time"] = time
+                    single_point["alpha1"] = dp.alpha1
+                    single_point["alpha2"] = dp.alpha2
+                    single_point["alpha3"] = dp.alpha3
+                    single_point["alpha4"] = dp.alpha4
+                    data_arr.append(single_point)
 
-            return JsonResponse(data_dict)
+            return JsonResponse(data_arr,safe=False)
         else:
             print("cannot find user")
             return JsonResponse({"data":"-1"})

@@ -47,10 +47,11 @@ def end_trip(request,user_name):
                     single_point = {}
                     time = "{}-{:0>2}-{:0>2} {:0>2}:{:0>2}:{:0>2}".format(dp.createdAt.year,dp.createdAt.month, dp.createdAt.day, dp.createdAt.hour,dp.createdAt.minute,dp.createdAt.second) 
                     single_point["time"] = time
-                    single_point["alpha1"] = dp.alpha1
-                    single_point["alpha2"] = dp.alpha2
-                    single_point["alpha3"] = dp.alpha3
-                    single_point["alpha4"] = dp.alpha4
+                    single_point["avg_alpha"] = round((dp.alpha1 + dp.alpha2 + dp.alpha3 + dp.alpha4) / 4.0,2)
+                    # single_point["alpha1"] = dp.alpha1
+                    # single_point["alpha2"] = dp.alpha2
+                    # single_point["alpha3"] = dp.alpha3
+                    # single_point["alpha4"] = dp.alpha4
                     data_arr.append(single_point)
 
             return JsonResponse(data_arr,safe=False)

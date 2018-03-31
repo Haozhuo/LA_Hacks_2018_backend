@@ -8,9 +8,31 @@ End-point documentation:
 
 2. GET http://167.99.161.100:8000/api/end_trip/[username]
    This end-point is used when the user click the end trip button.
-   Return a JSON object that returns all data points for this trip
+   Return a JSON object that returns all data points for this trip. The time is sorted from earliest to latest.
 
-   NOTE: This is not implemented yet
+   [
+        {
+            alpha1: 1,
+            alpha2: 2,
+            time: "2018-03-31 19:37:32",
+            alpha4: 4,
+            alpha3: 3
+        },
+        {
+            alpha1: 1,
+            alpha2: 2,
+            time: "2018-03-31 20:07:31",
+            alpha4: 4,
+            alpha3: 3
+        },
+        {
+            alpha1: 11,
+            alpha2: 22,
+            time: "2018-03-31 20:09:02",
+            alpha4: 44,
+            alpha3: 33
+        }
+    ]
 
 3. GET http://167.99.161.100:8000/api/send_data/[username]?v1=[value1]&v2=[value2]&v3=[value3]&v4=[value4]
 

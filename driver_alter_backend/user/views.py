@@ -79,6 +79,7 @@ def receive_data(request,user_name):
                 # TODO: Data processing
                 # if okay, return status 1; if not, return -1
                 global count
+                print("The count is {}".format(count))
                 if count %  5 == 4:
                     count = count + 1
                     return JsonResponse({"status": "-1", "data": "1"})

@@ -4,6 +4,7 @@ from .models import DataPoint, Trip, UserData
 import os
 
 trip_start = False
+count = 0
 
 # Create your views here.
 def home(request):
@@ -77,7 +78,13 @@ def receive_data(request,user_name):
                 trip.datapoint_set.create(trip=trip,alpha1=float(v1),alpha2=float(v2),alpha3=float(v3),alpha4=float(v4))
                 # TODO: Data processing
                 # if okay, return status 1; if not, return -1
-                return JsonResponse({"status": "1", "data": "1"})
+                global count
+                if count %  5 == 4:
+                    count = count + 1
+                    return JsonResponse({"status": "-1", "data": "1"})
+                else:
+                    count = count + 1
+                    return JsonResponse({"status": "1", "data": "1"})
             else:
                 print("cannot find trip")
                 return JsonResponse({"status": "1","data":"-1"})

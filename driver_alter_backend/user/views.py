@@ -90,9 +90,30 @@ def receive_data(request,user_name):
                 trip = trips[0]
                 print(trip)
                 trip.datapoint_set.create(trip=trip,alpha1=float(v1),alpha2=float(v2),alpha3=float(v3),alpha4=float(v4))
+                sum_alpha = 0.0
+                count = 0
                 # TODO: Data processing
                 # if okay, return status 1; if not, return -1
-                return JsonResponse({"status": "1", "data": "1"})
+                if float(v1) != 0:
+                    sum_alpha += float(v1)
+                    count += 1
+                if float(v2) != 0:
+                    sum_alpha += float(v2)
+                    count += 1
+                if float(v3) != 0:
+                    sum_alpha += float(v3)
+                    count += 1
+                if float(v4) != 0:
+                    sum_alpha += float(v4)
+                    count += 1 
+
+                if count == 0:
+                    return JsonResponse({"status": "1", "data": "1"})
+                else:
+                    if sum_alpha / float(count) <= 0.8:
+                        return JsonResponse({"status": "1", "data": "1"})
+                    else:
+                        return JsonResponse({"status": "-1", "data": "1"})
             else:
                 print("cannot find trip")
                 return JsonResponse({"status": "1","data":"-1"})
